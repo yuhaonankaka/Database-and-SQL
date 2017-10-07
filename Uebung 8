@@ -48,3 +48,21 @@ order by (p.x-c.x )*( p.x-c.x )+( p.y-c.y)*( p.y-c.y) asc ,
 from points p, clusters_1 c
 ) x
 where x. rank =1
+
+
+
+
+
+
+
+select wiealt, Schaeden, count(*)
+from Schadenshoehe
+group by wiealt, Schaeden
+
+select Autotyp, Schaeden, count(*)
+from Schadenshoehe
+group by Autotype, Schaeden
+
+select Geschlecht, Schaeden, count(*)
+from Schadenshoehe
+group by Geschlecht, Schaeden
