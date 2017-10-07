@@ -1,0 +1,8 @@
+with mehr_pruefen(MatrNr,VorlNr,PersNr,Note) as (
+select * from pruefen
+union
+values (28106,5041,2137,3.0)
+)
+select count * from
+mehr_pruefen 
+group by cube 
