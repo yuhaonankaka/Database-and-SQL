@@ -1,0 +1,84 @@
+<Vorlesungsverzeichnis >
+{
+for $sws in distinct - values (doc (’uni2 ’)// SWS )
+order by $sws
+return
+< Vorlesungen SWS ="{ $sws }">
+{
+for $vl in doc(’uni2 ’)// Vorlesung [ SWS = $sws ]
+order by $vl / Titel
+return <Vorlesung VorlNr ="{ $vl / @VorlNr }" Titel ="{ $vl / Titel }" />
+}
+</ Vorlesungen >
+}
+</ Vorlesungsverzeichnis >
+
+
+
+
+(: a) Suchen Sie die Professoren, die Vorlesungen halten. :)
+doc(’uni2’)//ProfessorIn[.//Vorlesung]/Name
+(: b) Finden Sie die Studenten, die alle Vorlesungen geh¨ort haben. :)
+doc(’uni2’)//Student[count(tokenize(hoert/@Vorlesungen," "))=
+count(//Vorlesung)]/Name
+(: c) Finden Sie die Studenten mit der gr¨oßten Semesterzahl unter
+Verwendung von Aggregatfunktionen. :)
+let $maxsws:=max(data(doc(’uni2’)//Student/Semester))
+return doc(’uni2’)//Student[Semester=$maxsws]
+(: d) Berechnen Sie die Gesamtzahl der Semesterwochenstunden, die die
+einzelnen Professoren erbringen. Dabei sollen auch die Professoren
+ber¨ucksichtigt werden, die keine Vorlesungen halten. :)
+for $p in doc(’uni2’)//ProfessorIn
+return <Prof>{$p/Name}<Summe>{sum(data($p//SWS))}</Summe></Prof>
+(: e) Finden Sie die Studenten, die alle vierstundigen Vorlesungen
+geh¨ort haben. :)
+let $fourcount:=count(doc(’uni2’)//Vorlesung[SWS=4])
+for $s in doc(’uni2’)//Student
+where count(
+for $h in tokenize($s/hoert/@Vorlesungen," ")
+where doc(’uni2’)//Vorlesung[@VorlNr=$h and SWS=4]
+return $h
+) = $fourcount
+return $s
+(: f) Finden Sie die Namen der Studenten, die in keiner Prufung
+eine bessere Note als 3.0 hatten. :)
+for $s in doc(’uni’)//Student
+where count(
+for $p in $s//Pruefung
+where $p/@Note < 3
+return $p
+) = 0
+return $s/Name
+(: g) Berechnen Sie den Umfang des Pr¨ufungsstoffes jedes Studenten.
+Es sollen der Name des Studenten und die Summe der Semesterwochenstunden
+der Pr¨ufungsvorlesungen ausgegeben werden. :)
+for $s in doc(’uni’)//Student
+return <Student>{$s/Name}<sum>{
+sum(for $p in $s//Pruefung
+return doc(’uni’)//Vorlesung[@VorlNr=$p/@Vorlesung]/SWS)}
+</sum></Student>
+
+
+
+(: h) Finden Sie Studenten, deren Namen den eines Professors enthalten. :)
+for $s in doc(’uni’)//Student
+where doc(’uni’)//ProfessorIn[contains($s/Name,Name)]
+return $s/Name
+(: i) Ermitteln Sie den Bekanntheitsgrad der Professoren unter den Studenten,
+wobei wir annehmen, dass Studenten die Professoren nur durch Vorlesungen
+oder Pr¨ufungen kennen lernen. :)
+for $p in doc(’uni’)//ProfessorIn
+return
+<Professor>
+{$p/Name}
+<Bekanntheit>
+{
+count(
+doc(’uni’)//Student[.//Pruefung[@Pruefer=$p/@PersNr]]/Name
+union
+( for $v in $p//Vorlesung/@VorlNr
+return doc(’uni’)//Student[contains(hoert/@Vorlesungen,$v)]/Name)
+)
+}
+</Bekanntheit>
+</Professor>
