@@ -67,3 +67,58 @@ from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
 where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
 group by v.titel, p.Name, s.Name
 ); 
+
+
+
+
+
+
+select p.Produkttype, f.Bezirk, k.wiealt, sum(v.Anzahl)
+from Verkaueufe v, Produkte p, Filialen f, Kunden k, Zeit z
+where v.Produkt=p.ProduktNr and v.Kunde = k. KundenNr
+and v.Filiale=f.Filialenkennung and v.VerkDatum=z.Datum
+and z.Saison="Hochsommer" and f.Land="D"
+group by cube(p.Produkttype, f.Bezirk, k.wiealt)
+
+
+
+
+
+
+with Professoren (persnr, name, rang, raum, gehalt, steuerklasse) as (
+values (2125,'Sokrates','C4',226,85000,1) UNION
+values (2126,'Russel','C4',232,80000,3) UNION
+values (2127,'Kopernikus','C3',310,65000,5) UNION
+values (2128,'Aristoteles','C4',250,85000,1) UNION
+values (2133,'Popper','C3',52,68000,1) UNION
+values (2134,'Augustinus','C3',309,55000,5) UNION
+values (2136,'Curie','C4',36,95000,3) UNION
+values (2137,'Kant','C4',7,98000,1)
+)
+
+select *,avg(gehalt)over() FROM Professoren;
+
+SELECT *, avg(gehalt) OVER (PARTITION BY rang) FROM Professoren;
+
+SELECT *, sum(gehalt) OVER (PARTITION BY rang ORDER BY gehalt DESC
+RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM Professoren;
+
+SELECT *, sum(gehalt) OVER (PARTITION BY rang ORDER BY gehalt DESC
+ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) FROM Professoren;
+
+SELECT *, avg(gehalt) OVER (PARTITION BY rang ORDER BY gehalt DESC
+ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING) FROM Professoren;
+
+SELECT *, avg(gehalt) OVER (PARTITION BY rang ORDER BY gehalt DESC
+RANGE BETWEEN 500 PRECEDING AND 500 FOLLOWING) FROM Professoren;
+
+SELECT *, lag(gehalt) OVER (ORDER BY gehalt DESC),
+lead(gehalt) OVER (ORDER BY gehalt DESC) FROM Professoren;
+
+
+SELECT * FROM (
+SELECT *, rank() OVER (ORDER BY gehalt desc) FROM Professoren
+) WHERE rank < 4
+
+SELECT * FROM professoren p_selbst WHERE 3>(SELECT count(*)
+FROM professoren p_reich WHERE p_selbst.gehalt < p_reich.gehalt)
