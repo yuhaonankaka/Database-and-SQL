@@ -1,0 +1,3 @@
+int MatrNrs []= new int [10000];
+String Names []= new String [10000];
+int Semesters []= new int [10000];
