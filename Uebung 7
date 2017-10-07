@@ -122,3 +122,100 @@ SELECT *, rank() OVER (ORDER BY gehalt desc) FROM Professoren
 
 SELECT * FROM professoren p_selbst WHERE 3>(SELECT count(*)
 FROM professoren p_reich WHERE p_selbst.gehalt < p_reich.gehalt)
+
+
+
+
+with mehr_pruefen ( MatrNr , VorlNr , PersNr , Note ) as (
+select * from pruefen
+union
+values (29120 ,0 ,0 ,3.0) , (29555 ,0 ,0 ,2.0) , (29555 ,0 ,0 ,1.3) , (29555 ,0 ,0 ,1.0)
+)
+
+
+#Ohne Windowfunktionen:
+with mehr_pruefen ( MatrNr , VorlNr , PersNr , Note ) as (
+select * from pruefen
+union
+values (29120 ,0 ,0 ,3.0) , (29555 ,0 ,0 ,2.0) , (29555 ,0 ,0 ,1.3) , (29555 ,0 ,0 ,1.0)
+),
+noten ( MatrNr , Semester , Note ) as (
+select s.matrnr , semester , avg ( Note )
+from studenten s, mehr_pruefen p
+where s. matrnr =p. matrnr
+group by s. matrnr , semester
+)
+select *,
+( select count (*)+1 from noten x
+where x. Semester =n. Semester and x.Note <n. Note ) as Rang ,
+( select avg(x. Note ) from noten x
+where x. Semester =n. Semester ) as GPA ,
+( select avg(x. Note ) from noten x
+where x. Semester =n. Semester ) - note as Abweichung
+from noten n order by semester , rang
+
+
+
+#Mit Windowfunktionen:
+with mehr_pruefen ( MatrNr , VorlNr , PersNr , Note ) as (
+select * from pruefen
+union
+values (29120 ,0 ,0 ,3.0) , (29555 ,0 ,0 ,2.0) , (29555 ,0 ,0 ,1.3) , (29555 ,0 ,0 ,1.0)
+),
+noten ( MatrNr , Semester , Note ) as (
+select s.matrnr , semester , avg ( Note )
+from studenten s, mehr_pruefen p
+where s. matrnr =p. matrnr
+group by s. matrnr , semester
+)
+select *,
+rank () over ( partition by Semester order by Note asc ) as Rang ,
+avg ( Note ) over ( partition by Semester ) as GPA ,
+avg ( Note ) over ( partition by Semester ) - note as Abweichung
+from noten order by semester , rang
+
+
+
+
+
+
+
+select
+supp_nation ,
+cust_nation ,
+l_year ,
+sum ( volume ) as revenue
+from
+(
+select
+n1. n_name as supp_nation ,
+n2. n_name as cust_nation ,
+extract ( year from l_shipdate ) as l_year ,
+l_extendedprice * (1 - l_discount ) as volume
+from
+supplier ,
+lineitem ,
+orders ,
+customer ,
+nation n1 ,
+nation n2
+where
+s_suppkey = l_suppkey
+and o_orderkey = l_orderkey
+and c_custkey = o_custkey
+and s_nationkey = n1. n_nationkey
+and c_nationkey = n2. n_nationkey
+and (
+(n1. n_name = ’UNITED STATES ’ and n2. n_name = ’GERMANY ’)
+or (n1. n_name = ’GERMANY ’ and n2. n_name = ’UNITED STATES ’)
+)
+and l_shipdate between date ’1995 -01 -01 ’ and date ’1996 -12 -31 ’
+) as shipping
+p by
+supp_nation ,
+cust_nation ,
+l_year
+order by
+supp_nation ,
+cust_nation ,
+l_year
