@@ -3,6 +3,67 @@ select * from pruefen
 union
 values (28106,5041,2137,3.0)
 )
-select count * from
-mehr_pruefen 
-group by cube 
+create table hoerentotal (vtitel varchar(30), pname varchar(30),
+sname varchar(30), all integer);
+insert into hoerentotal(
+select v.titel as VTitel, p.Name as PName, s.Name as SName,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by cube(v.titel, p.Name, s.Name)
+);
+
+
+
+
+create table hoerentotal (vtitel varchar(30), pname varchar(30),
+sname varchar(30), all integer);
+insert into hoerentotal(
+select null as VTitel, null as PName, null as SName,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+-- keine Gruppierung
+UNION
+select null, null, s.Name as SName,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by s.Name
+UNION
+select null, p.Name as PName, null,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by p.Name
+UNION
+select null, p.Name as PName, s.Name as SName,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by p.Name, s.Name
+UNION
+select v.titel as VTitel, null, null
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by v.titel
+UNION
+select v.titel as VTitel, null, s.Name as SName,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by v.titel, s.Name
+UNION
+select v.titel as VTitel, p.Name as PName, null,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by v.titel, p.Name
+UNION
+select v.titel as VTitel, p.Name as PName, s.Name as SName,
+count(*) as all
+from mehr_pruefen pr, Vorlesungen v, Professoren p, Studenten s
+where p.PersNr = pr.PersNr AND s.MatrNr=pr.MatrNr AND v.VorlNr=pr.VorlNr
+group by v.titel, p.Name, s.Name
+); 
