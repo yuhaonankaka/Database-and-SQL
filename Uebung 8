@@ -1,0 +1,15 @@
+with Klausur (MatrNr, Vorbereitungszeit, Note) as(
+values (1,150,1.7),(2,70,2.7),(3,450,2.0),(4,180,1.7),(5,2500,1.3)
+)
+SQL mit Skyline:
+select MatrNr from Klausur k skyline of k.Vorbereitungszeit min, k.Note min
+SQL ohne Skyline:
+select MatrNr from Klausur k
+where not exists (
+select * from klausur dom
+where
+dom.Vorbereitungszeit <= k.Vorbereitungszeit and
+dom.Note <= k.Note and (
+dom.Vorbereitungszeit < k.Vorbereitungszeit or
+dom.Note < k.Note)
+)
