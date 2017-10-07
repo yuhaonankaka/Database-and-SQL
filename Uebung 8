@@ -13,3 +13,38 @@ dom.Note <= k.Note and (
 dom.Vorbereitungszeit < k.Vorbereitungszeit or
 dom.Note < k.Note)
 )
+
+
+
+
+
+
+with points (id ,x,y) as (
+VALUES (’A’, 2, 12) , (’B’, 3, 11) , (’C’, 3 ,8) , (’D’, 5 ,4),
+(’E’ ,7 ,5) ,( ’F’ ,7 ,3) ,( ’G’ ,10 ,8) ,( ’H’ ,13 ,8)
+),
+clusters_0 (cid ,x,y) as (
+VALUES (’1’, 2, 12) , (’2’, 3, 11) , (’3’, 3 ,8)
+),
+clusters_1 (cid , x,y, count ) as (
+select cid , avg(px), avg (py), count (*) from (
+select cid , p.x as px , p.y as py , rank () OVER (
+partition by p.id
+order by (p.x-c.x )*( p.x-c.x )+( p.y-c.y)*( p.y-c.y) asc ,
+(c.x*c.x+c.y*c.y) asc )
+from points p, clusters_0 c
+) x
+where x. rank =1
+group by cid
+)
+Die Clusterzentren k¨ onnen mit folgender Abfrage ausgegeben werden
+select * from clusters_1
+Die Zuordnung kann mit folgender Abfrage ausgewertet werden
+select cid , pid from (
+select cid , p.id as pid , rank () OVER (
+partition by p.id
+order by (p.x-c.x )*( p.x-c.x )+( p.y-c.y)*( p.y-c.y) asc ,
+(c.x*c.x+c.y*c.y) asc )
+from points p, clusters_1 c
+) x
+where x. rank =1
