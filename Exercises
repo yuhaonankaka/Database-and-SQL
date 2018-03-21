@@ -1,0 +1,11 @@
+with v1 AS
+(SELECT distinct s.name
+FROM studenten s, hoeren h
+WHERE s.matrnr = h.matrnr)
+,v2 as (select distinct s2.name from studenten s2)
+            
+select  v2.name
+from v2
+where v2.name not in (select * from v1)
+
+ 
