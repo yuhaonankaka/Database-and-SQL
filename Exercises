@@ -45,3 +45,12 @@ order by s.semester asc
 select a1.name,a1.boss
 from assistenten a1,assistenten a2
 where a1.boss = a2.boss and a1.name<>a2.name
+
+
+
+select p.persnr,p.name,sum(v.sws) as sum
+from professoren p,vorlesungen v
+where v.gelesenvon = p.persnr 
+group by p.persnr,p.name
+having sum(v.sws) >=6
+
