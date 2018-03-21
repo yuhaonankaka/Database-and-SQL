@@ -27,3 +27,13 @@ where  p.name = 'Russel' and p.persnr = pr.persnr and pr.matrnr = s.matrnr
 select s.matrnr,s.name
 from studenten s,pruefen p,vorlesungen v
 where s.matrnr = p.matrnr and v.vorlnr = p.vorlnr and v.titel = 'Ethik'
+
+
+select s.name
+from studenten s,vorlesungen v1,vorlesungen v2,voraussetzen vor,hoeren h
+where s.matrnr = h.matrnr and h.vorlnr = v1.vorlnr and v2.titel = 'Wissenschaftstheorie' 
+and vor.vorgaenger = v1.vorlnr and vor.nachfolger = v2.vorlnr
+
+
+
+
