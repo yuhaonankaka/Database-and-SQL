@@ -40,3 +40,8 @@ from studenten s
 group by s.semester
 order by s.semester asc
 
+
+
+select a1.name,a1.boss
+from assistenten a1,assistenten a2
+where a1.boss = a2.boss and a1.name<>a2.name
