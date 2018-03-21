@@ -19,3 +19,11 @@ union
 select s.name
 from studenten s,professoren p, pruefen pr
 where  p.name = 'Russel' and p.persnr = pr.persnr and pr.matrnr = s.matrnr 
+
+
+
+
+
+select s.matrnr,s.name
+from studenten s,pruefen p,vorlesungen v
+where s.matrnr = p.matrnr and v.vorlnr = p.vorlnr and v.titel = 'Ethik'
