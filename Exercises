@@ -9,3 +9,13 @@ from v2
 where v2.name not in (select * from v1)
 
  
+
+
+
+select s.name
+from studenten s,professoren p ,vorlesungen v , hoeren h , pruefen pr
+where p.name = 'Russel' and p.persnr = v.gelesenvon and v.vorlnr = h.vorlnr and s.matrnr = h.matrnr 
+union
+select s.name
+from studenten s,professoren p, pruefen pr
+where  p.name = 'Russel' and p.persnr = pr.persnr and pr.matrnr = s.matrnr 
