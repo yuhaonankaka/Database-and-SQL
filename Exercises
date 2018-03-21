@@ -35,5 +35,8 @@ where s.matrnr = h.matrnr and h.vorlnr = v1.vorlnr and v2.titel = 'Wissenschafts
 and vor.vorgaenger = v1.vorlnr and vor.nachfolger = v2.vorlnr
 
 
-
+select count(*) as numberofstudents,s.semester
+from studenten s
+group by s.semester
+order by s.semester asc
 
