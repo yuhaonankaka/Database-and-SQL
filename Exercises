@@ -124,3 +124,49 @@ where s.name = 'Xenokrates' and s.matrnr = h.matrnr and h.vorlnr = v.vorlnr and 
 select distinct v.titel
 from vorlesungen v,studenten s,hoeren h
 where v.vorlnr = h.vorlnr and s.matrnr = h.matrnr and s.semester>0 and s.semester<5
+
+
+select avg(semester*1.0)
+from studenten
+
+
+
+with ss as (
+  select distinct s.* from studenten s,professoren p,vorlesungen v,hoeren h
+  where s.matrnr = h.matrnr and h.vorlnr = v.vorlnr and v.gelesenvon = p.persnr and p.name = 'Sokrates')
+  select avg(semester*1.0) from ss
+  
+  
+  ##the same meaning with the query before
+  with
+vorlesungen_von_sokrates as (
+  select *
+  from vorlesungen v,professoren p
+  where v.gelesenvon = p.persnr and p.name = 'Sokrates'),
+  studenten_von_sokrates as(
+    select *
+    from studenten s
+    where exists(
+      select *
+      from hoeren h,vorlesungen_von_sokrates v
+      where h.matrnr = s.matrnr and v.vorlnr = h.vorlnr)
+    )
+    select avg(semester) from studenten_von_sokrates
+    
+    
+    
+    
+    select hcount/(scount*1.000)
+from (select count(*) as scount from studenten) s,
+(select count(*) as hcount from hoeren) h
+
+
+with bekannt as(select s1.matrnr as sn1,s2.matrnr as sn2 
+           from studenten s1,studenten s2,hoeren h1,hoeren h2
+                where s1.matrnr = h1.matrnr and s2.matrnr = h2.matrnr and h1.vorlnr = h2.vorlnr and s1.matrnr<>s2.matrnr
+               )
+               select s.name,s.matrnr,count(*) as grad
+               from bekannt b,studenten s
+               where s.matrnr = sn1 
+               group by s.name,s.matrnr
+               order by grad desc
