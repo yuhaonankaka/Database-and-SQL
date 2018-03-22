@@ -99,3 +99,28 @@ where m1 = h2.matrnr and v1 not in (select hoeren.vorlnr from hoeren where hoere
 select distinct s.name
 from studenten s,vorlesungen v,professoren p,hoeren h
 where p.name = 'Sokrates' and p.persnr = v.gelesenvon and v.vorlnr = h.vorlnr and s.matrnr = h.matrnr
+
+
+
+
+
+select s2.name
+from studenten s1,studenten s2,hoeren h1,hoeren h2
+where s1.name = 'Fichte' and s1.matrnr = h1.matrnr and h1.vorlnr = h2.vorlnr and s2.matrnr = h2.matrnr and s1.matrnr<>s2.matrnr
+
+
+
+select a.*
+from assistenten a,studenten s,hoeren h,vorlesungen v
+where s.name = 'Fichte' and s.matrnr = h.matrnr and h.vorlnr = v.vorlnr and v.gelesenvon = a.boss
+
+
+
+select p.name
+from studenten s,professoren p,hoeren h,vorlesungen v
+where s.name = 'Xenokrates' and s.matrnr = h.matrnr and h.vorlnr = v.vorlnr and v.gelesenvon = p.persnr
+
+
+select distinct v.titel
+from vorlesungen v,studenten s,hoeren h
+where v.vorlnr = h.vorlnr and s.matrnr = h.matrnr and s.semester>0 and s.semester<5
