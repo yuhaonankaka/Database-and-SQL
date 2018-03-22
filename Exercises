@@ -67,3 +67,12 @@ select vvv1.name,vvv2.name
 from vvv1,vvv2,vorlesungen v
 where vvv1.vorlnr = vvv2.vorlnr and vvv1.matrnr <> vvv2.matrnr and v.titel = 'Grundzüge' and v.vorlnr = vvv1.vorlnr
 order by vvv1.name
+
+
+
+
+select v.vorlnr,v.titel
+from vorlesungen v
+where v.vorlnr not in
+(select distinct h.vorlnr
+from hoeren h)
