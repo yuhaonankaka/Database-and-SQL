@@ -84,3 +84,11 @@ select a.persnr,a.name
 from studenten s,hoeren h,assistenten a,vorlesungen v
 where s.name = 'Fichte' and s.matrnr = h.matrnr and h.vorlnr = v.vorlnr and v.gelesenvon = a.boss 
 
+
+
+
+select distinct m1,v1 
+from (select matrnr as m1,vorgaenger as v1
+from hoeren h,voraussetzen vo
+where vorlnr = nachfolger ),hoeren h2
+where m1 = h2.matrnr and v1 not in (select hoeren.vorlnr from hoeren where hoeren.matrnr = m1)
