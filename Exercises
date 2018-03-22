@@ -3,7 +3,6 @@ with v1 AS
 FROM studenten s, hoeren h
 WHERE s.matrnr = h.matrnr)
 ,v2 as (select distinct s2.name from studenten s2)
-            
 select  v2.name
 from v2
 where v2.name not in (select * from v1)
@@ -54,3 +53,17 @@ where v.gelesenvon = p.persnr
 group by p.persnr,p.name
 having sum(v.sws) >=6
 
+
+
+
+
+with vvv1 as (select h1.vorlnr,s1.matrnr,s1.name
+from studenten s1,hoeren h1
+where h1.matrnr = s1.matrnr)
+,vvv2 as (select h2.vorlnr,s2.matrnr,s2.name
+from studenten s2,hoeren h2
+where h2.matrnr = s2.matrnr)
+select vvv1.name,vvv2.name
+from vvv1,vvv2,vorlesungen v
+where vvv1.vorlnr = vvv2.vorlnr and vvv1.matrnr <> vvv2.matrnr and v.titel = 'Grundzüge' and v.vorlnr = vvv1.vorlnr
+order by vvv1.name
