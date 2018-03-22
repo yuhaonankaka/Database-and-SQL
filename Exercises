@@ -92,3 +92,10 @@ from (select matrnr as m1,vorgaenger as v1
 from hoeren h,voraussetzen vo
 where vorlnr = nachfolger ),hoeren h2,studenten s
 where m1 = h2.matrnr and v1 not in (select hoeren.vorlnr from hoeren where hoeren.matrnr = m1) and m1 = s.matrnr
+
+
+
+
+select distinct s.name
+from studenten s,vorlesungen v,professoren p,hoeren h
+where p.name = 'Sokrates' and p.persnr = v.gelesenvon and v.vorlnr = h.vorlnr and s.matrnr = h.matrnr
