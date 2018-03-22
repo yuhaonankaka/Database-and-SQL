@@ -76,3 +76,11 @@ from vorlesungen v
 where v.vorlnr not in
 (select distinct h.vorlnr
 from hoeren h)
+
+
+
+
+select a.persnr,a.name
+from studenten s,hoeren h,assistenten a,vorlesungen v
+where s.name = 'Fichte' and s.matrnr = h.matrnr and h.vorlnr = v.vorlnr and v.gelesenvon = a.boss 
+
