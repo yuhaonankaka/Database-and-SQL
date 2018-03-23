@@ -252,11 +252,11 @@ where s.matrnr not in(select p.matrnr from hoeren h,pruefen p
 with recursive voraussetzenRek (vorlnr , counter ) as (
 (select v.vorlnr , 1 as counter
 from vorlesungen v
-where v. titel = 'Der Wiener Kreis ')
+where v. titel = 'Der Wiener Kreis')
 union
 (select vs. vorgaenger , vsr. counter + 1 as counter
 from voraussetzenRek vsr , voraussetzen vs
 where vsr. vorlnr =vs. nachfolger)
 )
 select max(counter) as fruehestesSemester
-from voraussetzenRek ;                                                    
+from voraussetzenRek;                                         
