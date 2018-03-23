@@ -220,3 +220,16 @@ gehort as (select avg(p.note) as jnote
 
 select nnote,jnote
 from nicht,gehort
+
+
+
+select s.*
+from Studenten s
+where not exists ( select * from pruefen p
+where s. MatrNr = p. MatrNr
+and not exists ( select *
+from hoeren h
+where h. MatrNr = s.
+MatrNr
+and h. VorlNr = p.
+VorlNr ));
