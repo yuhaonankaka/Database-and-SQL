@@ -184,9 +184,23 @@ values
 (' Behrenbruch', '100m', 30) ,
 (' Behrenbruch', 'Weitsprung ', 50)
 )
-
 select z1.name,count(z1.disziplin) as c
 from zehnkampfd z1,zehnkampfd z2
 where z2.name = 'Bolt' and z1.name<>z2.name and z1.disziplin = z2.disziplin and z1.punkte>z2.punkte
 group by z1.name
 having(count(z1.disziplin)>=(select count(distinct disziplin) from zehnkampfd) )
+
+
+
+
+
+with swss as (select sum(v.sws) as ss1
+from hoeren h,vorlesungen v
+where h.vorlnr = v.vorlnr)
+,cc as (select count(distinct s.matrnr) as cc1 from studenten s)
+select s2.name from(select s.matrnr
+from cc,swss,studenten s,hoeren h2,vorlesungen v2
+where s.matrnr = h2.matrnr and h2.vorlnr = v2.vorlnr
+group by s.matrnr
+having sum(v2.sws)>=(select ss1/cc1 from swss,cc)) u,studenten s2
+where u.matrnr = s2.matrnr
