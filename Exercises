@@ -260,3 +260,19 @@ where vsr. vorlnr =vs. nachfolger)
 )
 select max(counter) as fruehestesSemester
 from voraussetzenRek;                                         
+
+
+
+
+
+with recursive station (von , erreichen ) as (
+(select u.von , u.nach 
+from ubahn u
+where u.von = 'Garching Forschungszentrum')
+union
+(select station.erreich, ubahn.nach as erreichen
+from station,ubahn
+where station.erreich=ubahn.von)
+)
+select *
+from station
