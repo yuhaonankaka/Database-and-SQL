@@ -204,3 +204,19 @@ where s.matrnr = h2.matrnr and h2.vorlnr = v2.vorlnr
 group by s.matrnr
 having sum(v2.sws)>=(select ss1/cc1 from swss,cc)) u,studenten s2
 where u.matrnr = s2.matrnr
+
+
+
+
+
+
+with nicht as(
+select avg(p.note) as nnote
+from pruefen p
+where not exists(select * from hoeren h where p.matrnr = h.matrnr and h.vorlnr = p.vorlnr)),
+gehort as (select avg(p.note) as jnote
+           from pruefen p
+           where exists (select * from hoeren h where p.matrnr = h.matrnr and h.vorlnr = p.vorlnr))
+
+select nnote,jnote
+from nicht,gehort
