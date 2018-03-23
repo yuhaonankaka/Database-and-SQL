@@ -170,3 +170,23 @@ with bekannt as(select s1.matrnr as sn1,s2.matrnr as sn2
                where s.matrnr = sn1 
                group by s.name,s.matrnr
                order by grad desc
+               
+               
+              
+with zehnkampfd (name , disziplin , punkte ) as (
+values
+('Bolt', '100m', 50) ,
+('Bolt', 'Weitsprung ', 50) ,
+('Eaton', '100m', 40) ,
+('Eaton', 'Weitsprung ', 60) ,
+('Suarez', '100m', 60 ),
+('Suarez', 'Weitsprung ', 60) ,
+(' Behrenbruch', '100m', 30) ,
+(' Behrenbruch', 'Weitsprung ', 50)
+)
+
+select z1.name,count(z1.disziplin) as c
+from zehnkampfd z1,zehnkampfd z2
+where z2.name = 'Bolt' and z1.name<>z2.name and z1.disziplin = z2.disziplin and z1.punkte>z2.punkte
+group by z1.name
+having(count(z1.disziplin)>=(select count(distinct disziplin) from zehnkampfd) )
