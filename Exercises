@@ -233,3 +233,14 @@ where h. MatrNr = s.
 MatrNr
 and h. VorlNr = p.
 VorlNr ));
+
+
+
+
+\\(the same as above)
+select s.*
+from Studenten s
+where s.matrnr not in(select p.matrnr from hoeren h,pruefen p
+             where p.matrnr = h.matrnr and p.vorlnr not in(select p.vorlnr
+                                                     from pruefen p,hoeren h
+                                                     where p.matrnr = h.matrnr and h.vorlnr = p.vorlnr))
